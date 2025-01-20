@@ -1,0 +1,218 @@
+
+
+#include <iostream>
+using namespace std;
+
+enum enPlayerChoice{ Stone = 1, Paper = 2, Scissors = 3};
+enum enRoundWinner{ Player1 = 1, Computer = 2, NoWinner = 3};
+
+struct stRoundDetails
+{
+	int RoundNumber;
+	int Player1Choice;
+	int ComputerChoice;
+	enRoundWinner RoundResult;
+
+};
+
+int GiveRoundsnumber()
+{
+	int Number;
+	do
+	{
+		cout << "How many Rounds you want to play from 1 to 10 ? " << endl;
+		cin >> Number;
+
+	} while (Number < 0 && Number > 11);
+
+	return Number;
+}
+
+int ReadPlayerChoice()
+{
+	int Number = 0;
+	do
+	{
+		cout << "\n Your Choice: [1]:Stone, [2]:Paper, [3]:Scissors ?";
+		cin >> Number;
+
+	} while (Number < 1 && Number > 3);
+	
+	return Number;
+}
+
+int ComputerChoice()
+{
+	// Function to generate a random number
+
+	short ranNum = rand() % (3 - 1 + 1) + 1;
+	return ranNum;
+}
+
+short CheckWinner(int& Number1, int& Number2)
+{
+	if (Number1 == 1)
+	{
+		switch (Number2)
+		{
+		case 1:
+			return 0;
+		case 2:
+			return 2;
+		case 3:
+			return 1;
+		}
+	}
+	else if(Number1 == 2)
+	{
+		switch (Number2)
+		{
+		case 1:
+			return 1;
+		case 2:
+			return 0;
+		case 3:
+			return 2;
+		}
+	}
+	else
+	{
+		switch (Number2)
+		{
+		case 1:
+			return 2;
+		case 2:
+			return 1;
+		case 3:
+			return 0;
+		}
+	}
+}
+
+int TimesWinner(enRoundWinner roundwintime[10], int length, enRoundWinner choice)
+{
+	int counter = 0;
+	
+	for (int i = 0; i < length; i++)
+	{
+		if (roundwintime[i] == choice)
+		{
+			counter++;
+		}
+	}
+
+	return counter;
+}
+
+string FinalWinner(enRoundWinner player1, enRoundWinner player2, enRoundWinner roundwintime[10], int length)
+{
+	int Counterplayer1 = TimesWinner(roundwintime, length, player1);
+	int Counterplayer2 = TimesWinner(roundwintime, length, player2);
+	if (Counterplayer1 > Counterplayer2)
+	{
+		return " Player 1 ";
+	}
+	else if (Counterplayer2 > Counterplayer1)
+	{
+		return " Computer ";
+	}
+	else
+	{
+		return " No Winner ";
+	}
+}
+
+string RoundWinner(stRoundDetails& RoundDetail)
+{
+	if (RoundDetail.RoundResult == enRoundWinner::Computer)
+	{
+		return " Computer";
+	}
+	else if (RoundDetail.RoundResult == enRoundWinner::Player1)
+	{
+		return " Player 1";
+	}
+	else
+	{
+		return " No Winner ";
+	}
+
+}
+
+stRoundDetails PlayRound(int RoundNumber, stRoundDetails& RoundDetail)
+{
+	
+	cout << " Round " << RoundNumber << " begins: " << endl;
+	RoundDetail.RoundNumber = RoundNumber;
+	RoundDetail.Player1Choice = ReadPlayerChoice();
+	RoundDetail.ComputerChoice = ComputerChoice();
+	short Result = CheckWinner(RoundDetail.Player1Choice, RoundDetail.ComputerChoice);
+
+	if (Result == 0)
+		RoundDetail.RoundResult = enRoundWinner::NoWinner;
+	else if(Result == 1)
+		RoundDetail.RoundResult = enRoundWinner::Player1;
+	else
+		RoundDetail.RoundResult = enRoundWinner::Computer;
+	
+	
+	return RoundDetail;
+
+}
+
+void PrintRoundResultat(stRoundDetails& RoundDetail)
+{
+	cout << "------------------Round[" << RoundDetail.RoundNumber << "]---------------------" << endl;
+	cout << " Player 1    Choice : " << RoundDetail.Player1Choice << endl;
+	cout << " Computer    Choice : " << RoundDetail.ComputerChoice << endl;
+	cout << " Round       Winner : " << " [" << RoundWinner(RoundDetail) << "] " << endl;
+	cout << "-------------------------------------------------------------------------------" << endl;
+	cout << "\n\n";
+}
+
+void PlayRounds(int RoundsNumber)
+{
+	int CounterRounds = 1;
+	enRoundWinner RoundResultArray[10];
+	int length = 0;
+	stRoundDetails rounddetail;	
+
+		do
+		{
+			rounddetail = PlayRound(CounterRounds, rounddetail);
+			PrintRoundResultat(rounddetail);
+			RoundResultArray[length] = rounddetail.RoundResult;
+			CounterRounds++;
+			length++;
+
+		} while (CounterRounds <= RoundsNumber);
+
+		
+	
+
+		cout << "\t\t\t-----------------------------------------------------------------------" << endl;
+		cout << "\t\t\t\t\t\t+++ G  A  M  E    O  V  E  R +++" << endl;
+		cout << "\t\t\t-----------------------------------------------------------------------" << endl;
+		cout << "\t\t\t------------[ Game Results ]-------------------------------------------" << endl;
+		cout << "\t\t\t Game Rounds          : " << RoundsNumber << endl;
+		cout << "\t\t\t Player 1 won times   : " << TimesWinner(RoundResultArray, RoundsNumber, enRoundWinner::Player1) << endl;
+		cout << "\t\t\t Computer won times   : " << TimesWinner(RoundResultArray, RoundsNumber, enRoundWinner::Computer) << endl;
+		cout << "\t\t\t Draw times           : " << TimesWinner(RoundResultArray, RoundsNumber, enRoundWinner::NoWinner) << endl;
+		cout << "\t\t\t Final Winner         : " << FinalWinner(enRoundWinner::Player1, enRoundWinner::Computer, RoundResultArray, RoundsNumber) << endl;
+		cout << "\t\t\t-----------------------------------------------------------------------" << endl;
+			
+
+}
+
+int main()
+{
+
+	// Seeds the random number generator in c++, called only Once.
+	srand((unsigned)time(NULL));
+
+
+	PlayRounds(GiveRoundsnumber());
+	return 0;
+}
+
+
