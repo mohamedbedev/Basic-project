@@ -23,7 +23,7 @@ int GiveRoundsnumber()
 		cout << "How many Rounds you want to play from 1 to 10 ? " << endl;
 		cin >> Number;
 
-	} while (Number < 0 && Number > 11);
+	} while (Number < 0 || Number > 11);
 
 	return Number;
 }
@@ -36,7 +36,7 @@ int ReadPlayerChoice()
 		cout << "\n Your Choice: [1]:Stone, [2]:Paper, [3]:Scissors ?";
 		cin >> Number;
 
-	} while (Number < 1 && Number > 3);
+	} while (Number < 1 || Number > 3);
 	
 	return Number;
 }
